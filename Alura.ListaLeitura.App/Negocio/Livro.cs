@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System;
 
 namespace Alura.ListaLeitura.App.Negocio
 {
@@ -8,9 +9,11 @@ namespace Alura.ListaLeitura.App.Negocio
         public string Titulo { get; set; }
         public string Autor { get; set; }
         public ListaDeLeitura Lista { get; set; }
-
+        
+        
         public string Detalhes()
         {
+            
             var stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("Detalhes do Livro");
             stringBuilder.AppendLine("=====");

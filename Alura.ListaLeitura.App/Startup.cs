@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System;
 
 namespace Alura.ListaLeitura.App
-{
+{ 
     public class Startup
     {
+        
         // fluxo pipe line
         public void Configure(IApplicationBuilder app)
         {
@@ -26,11 +28,13 @@ namespace Alura.ListaLeitura.App
                 { "/Livros/Lidos,", _repo.Lidos.ToString() }
             };
 
+            
             if (caminhosAtendidos.ContainsKey(context.Request.Path))
             {
                 return context.Response.WriteAsync(caminhosAtendidos[context.Request.Path]);
             }
 
+            context.Response.StatusCode = 404;
             return context.Response.WriteAsync("Caminho Inexistente.");
         
         }
