@@ -7,6 +7,7 @@ using System;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Alura.ListaLeitura.App.Negocio;
+using System.Linq;
 
 namespace Alura.ListaLeitura.App
 {
@@ -25,6 +26,7 @@ namespace Alura.ListaLeitura.App
             builder.MapRoute("Livros/Lendo", LivrosLendo);
             builder.MapRoute("Livros/Lidos", LivrosLidos);
             builder.MapRoute("Cadastro/NovoLivro/{nome}/{autor}",NovoLivroParaLer);
+            builder.MapRoute("Livros/Detalhes/{id:int}", ExibeDetalhes);
             var rotas = builder.Build();
 
             app.UseRouter(rotas);
@@ -32,13 +34,20 @@ namespace Alura.ListaLeitura.App
            // app.Run(Roteamento);
         }
 
+        public Task ExibeDetalhes(HttpContext context)
+        {
+            int id = Convert.ToInt32(context.GetRouteValue("id"));
+            var repo = new LivroRepositorioCSV();
+            var livro = repo.Todos.First(l => l.Id == id);  //linq 
+            return context.Response.WriteAsync(livro.Detalhes());
+        }
+
         public Task NovoLivroParaLer(HttpContext context)
         {
             var livro = new Livro()
             {
                 Titulo = context.GetRouteValue("nome").ToString(),
-                Autor = context.GetRouteValue("autor").ToString(),
-            
+                Autor = context.GetRouteValue("autor").ToString(),        
             };
 
 
