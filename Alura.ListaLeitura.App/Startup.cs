@@ -14,9 +14,9 @@ namespace Alura.ListaLeitura.App
     public class Startup
     {
         public void ConfigureServices(IServiceCollection services) 
-        {
-            
-            services.AddRouting();        }
+        {            
+            services.AddRouting();
+        }
 
         // fluxo pipe line
         public void Configure(IApplicationBuilder app)
@@ -28,6 +28,7 @@ namespace Alura.ListaLeitura.App
             builder.MapRoute("Cadastro/NovoLivro/{nome}/{autor}",NovoLivroParaLer);
             builder.MapRoute("Livros/Detalhes/{id:int}", ExibeDetalhes);
             builder.MapRoute("Cadastro/NovoLivro",ExibeFormulario);
+            builder.MapRoute("Cadastro/Incluir", ProcessaFormulario);
             var rotas = builder.Build();
 
             app.UseRouter(rotas);
@@ -35,13 +36,28 @@ namespace Alura.ListaLeitura.App
            // app.Run(Roteamento);
         }
 
+        public Task ProcessaFormulario(HttpContext context)
+        {
+            var livro = new Livro()
+            {
+                Titulo = context.Request.Query["titulo"].First(),
+                Autor  = context.Request.Query["autor"].First(),
+            };
+
+
+            var repo = new LivroRepositorioCSV();
+            repo.Incluir(livro);
+            return context.Response.WriteAsync("O livro foi adicionado com sucesso");
+
+        }
+
         public Task ExibeFormulario(HttpContext context)
         {
             var html = @"
             <html>
-                <form> 
-                    <input>
-                    </input>
+                <form action= '/Cadastro/Incluir'> 
+                    <input name ='titulo'/>
+                    <input name = 'autor'/>
                     <button>Gravar</button>
                 </form> 
             </html>";
@@ -70,7 +86,7 @@ namespace Alura.ListaLeitura.App
             return context.Response.WriteAsync("O livro foi adicionado com sucesso");
         }
 
-        //requisicao
+       
         public Task Roteamento(HttpContext context)
         {
             var _repo = new LivroRepositorioCSV();
